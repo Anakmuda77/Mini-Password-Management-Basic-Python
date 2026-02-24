@@ -17,16 +17,20 @@ class user:
             with open(path,'r') as f:
                 # Mengubah Json jadi dictionary
                 paswdJson = json.loads(f.read())
-                paswdJson[self.account] ={'username':self.name, 'password': self.password}
 
-                with open(path,'w') as f :
-                    f.write(json.dumps(paswdJson))
+                if(self.account in paswdJson):
+                    print(self.account," Akun sudah ada dalam sistem")
+                else:
+                    paswdJson[self.account] ={'username':self.name, 'password': self.password}
+                    with open(path,'w') as f :
+                        f.write(json.dumps(paswdJson))
 
         
-        except:
+        except FileNotFoundError:
             paswdJson[self.account] = {'username':self.name, 'password': self.password}
-            with open(path,'a') as f:
+            with open(path,'w') as f:
                 f.write(json.dumps(paswdJson))
+
 
 
     # Melihat list Akun yang sudah disimpan
@@ -39,3 +43,61 @@ class user:
                 print("- Username :  ",paswdJson[i]['username'])
                 print("- Password :  ",paswdJson[i]['password'])
 
+
+    # Mencari Akun 
+    def searchAccount(self,account):
+        # Membuka file Json 
+        with open (path,'r') as f:
+            paswdJson = json.loads(f.read())
+        # Mencari key dari akun yang ingin di cari
+            if account in list(paswdJson):
+                print("- Username : ",paswdJson[account]['username'])
+                print("- Pasword : ",paswdJson[account]['password'])
+
+            else:
+                print("Akun tidak ditemukan ")
+
+    # Edit Account
+    def editAccount(self,account):
+        # Membuka file Json
+        with open (path,'r') as f:
+            paswdJson = json.loads(f.read())
+
+        # Mengecek apakah akun ada atau tidak
+        if account in list(paswdJson):
+            print("Username lama anda adalah : ",paswdJson[account]['username'])
+            print("Password lama anda adalah : ",paswdJson[account]['password'])
+            print("----Silahkan masukkan username dan password baru anda----")
+            newUserName = str(input("Masukkan username baru anda : "))
+            newPasword  = str(input("Masukkan password baru anda : "))
+
+            paswdJson[account]['username'] = newUserName
+            paswdJson[account]['password'] = newPasword
+
+            # Menulis ulang json file dengan akun yang sudah diedit
+            with open (path,'w') as f:
+                f.write(json.dumps(paswdJson))
+
+            print("Berhasil diperbaharui")
+
+        else:
+            print(account, "Akun tidak ditemukan")
+
+
+    # Menghapus Akun yang ada
+    def delAccount(self,account):
+        # Mengambil Data Json Terlebih Dahulu
+        with open (path,'r') as f:
+            paswdJson = json.loads(f.read())
+        
+        # Mengecek apakah akun yang dicari ada atau tidak
+        if account in list(paswdJson):
+            del paswdJson[account]
+            # Timpa File Yang sudah di hapus dengan Dictionary baru.
+            with open (path,'w') as f :
+                f.write(json.dumps(paswdJson))
+            print("Akun ",account," Berhasil di hapus ")
+
+        else :
+            print(account, "Tidak berhasil di temukan")
+                
