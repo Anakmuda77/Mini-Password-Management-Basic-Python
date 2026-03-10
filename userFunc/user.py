@@ -2,12 +2,34 @@ import json
 path = r'C:\Users\advan\Documents\Pemrograman\Python\Basic Exercise\Mini Password Manager/passwords.json'
 
 
+# Menggunakan enkripsi sederhana Ceaser Chipter
+def _encodePassCeaser(paswd,shift=5):
+    result = ""
+    for i in paswd:
+        # chr digunakan untuk mengambil nilai alfabet dari unicode
+        # ord digunakan untuk mengambil nilai unicode dari alfabet
+        result += chr(ord(i) + shift)
+        
+    return result
+
+# Menggunakan dekripsi sederhana Ceaser Chipter
+def decodePassCeaser(paswd,shift=5):
+    result = ""
+    for i in paswd:
+        # chr digunakan untuk mengambil nilai alfabet dari unicode
+        # ord digunakan untuk mengambil nilai unicode dari alfabet
+        result += chr(ord(i) - shift)
+        
+    return result
+
+
 class user:
     # Constructor method
     def __init__(self,account,name,password):
         self.account = account
         self.name = name
         self.password = password
+
 
     # Method untuk membuat Akun baru
     def createAccount(self):
@@ -21,7 +43,7 @@ class user:
                 if(self.account in paswdJson):
                     print(self.account," Akun sudah ada dalam sistem")
                 else:
-                    paswdJson[self.account] ={'username':self.name, 'password': self.password}
+                    paswdJson[self.account] ={'username':self.name, 'password': _encodePassCeaser(self.password)}
                     with open(path,'w') as f :
                         f.write(json.dumps(paswdJson))
 
@@ -29,7 +51,7 @@ class user:
 
         
         except FileNotFoundError:
-            paswdJson[self.account] = {'username':self.name, 'password': self.password}
+            paswdJson[self.account] = {'username':self.name, 'password': _encodePassCeaser(self.password)}
             with open(path,'w') as f:
                 f.write(json.dumps(paswdJson))
             print("Akun Berhasil Ditambahkan")
@@ -46,6 +68,15 @@ def seeAllAccount():
             print("- Username :  ",paswdJson[i]['username'])
             print("- Password :  ",paswdJson[i]['password'])
 
+
+def seeAllAccountWithoutEncrypt():
+    with open (path,'r') as f :
+        paswdJson = json.loads(f.read())
+        print("-----Koleksi Akun----")
+        for i in list(paswdJson):
+            print("Tipe Akun : ",i)
+            print("- Username :  ",paswdJson[i]['username'])
+            print("- Password :  ",decodePassCeaser(paswdJson[i]['password']))
 
 # Mencari Akun 
 def searchAccount(account):
@@ -75,7 +106,7 @@ def editAccount(account):
         newPasword  = str(input("Masukkan password baru anda : "))
 
         paswdJson[account]['username'] = newUserName
-        paswdJson[account]['password'] = newPasword
+        paswdJson[account]['password'] = _encodePassCeaser(newPasword)
 
         # Menulis ulang json file dengan akun yang sudah diedit
         with open (path,'w') as f:

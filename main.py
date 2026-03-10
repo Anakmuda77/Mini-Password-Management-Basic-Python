@@ -27,7 +27,22 @@ while a == True:
            print("===Melihat Semua Account===")
            user.seeAllAccount()
            print("")
-
+           while True :
+               inputUser = str(input("Apakah Anda Ingin Melihatt Password Terdekripsi (Yes/No) : "))
+               if(inputUser.lower() == "yes"):
+                   print("===Melihat Semua Account Tanpa Enkripsi===")
+                   user.seeAllAccountWithoutEncrypt()
+                   print("")
+                   break
+               elif(inputUser.lower() == "no"):
+                   print("Baiklah Mungkin Lain Kali")
+                   print("")
+                   break
+               else:
+                   print("===Masukkan Sesuai Pilihan===")
+                   print("")
+                   continue
+               
        elif(i==3):
            print("")
            account = str(input("Masukkan Akun yang ingin diedit : "))
